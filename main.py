@@ -1,5 +1,16 @@
+from datetime import datetime
+
+
 # global variables
 all_transactions_list = []
+budgets = {}
+
+'''total_budget = 0
+Food_budget = 0
+Entertainment_budget = 0
+Travel_budget = 0
+Personal_budget = 0
+Miscellaneous_budget = 0'''
 
 
 # Main menu function
@@ -29,44 +40,30 @@ def user_menu_input():
     # if else to check entry
 
 
+def get_datetime_input():
+    while True:
+        date_str = input('Enter the date in "dd/mm/yyyy" format: ')
+        try:
+            date_formatted = datetime.strptime(date_str, "%d/%m/%Y")
+            return date_formatted
+            break
+        except:
+            print("Enter a valid date in the specified format")
+
+
+def get_budget_month():
+    while True:
+        month_str = input('Enter the budget month in "mm/yyyy" format: ')
+        try:
+            month_formatted = datetime.strptime(month_str, "%m/%Y")
+            return month_formatted
+            break
+        except:
+            print("Enter a valid month in the specified format")
+
+
 def add_transactions():
     global all_transactions_list
-    # day and moth for checking the reference in list so we can assign it correctly not sure just kept it here for now
-    day = {
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-    }
-    month = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-    # each transaction is of format Transaction = (date, type, amount, category, description)
     while True:
         entry = []
         try:
@@ -75,9 +72,9 @@ def add_transactions():
             choice = -1
         if choice == 1:
             print(
-                "Enter your transactions below, it follows the format Transaction = (date, type, amount, category, description)"
+                "Enter your transactions below, it follows the format Transaction = (date, transaction type, amount, category, description)"
             )
-            date = input("Enter the date of trasaction in format dd/mm/yyyy: ")
+            date = get_datetime_input()
             t_type = int(
                 input(
                     "Enter the type of transaction: \n\n1.Enter 1 for income\n2.Enter 2 for expense"
@@ -85,14 +82,10 @@ def add_transactions():
             )
             if t_type == 1:
                 transaction_type = "income"
+                ctgry = 1
             elif t_type == 2:
                 transaction_type = "expense"
-            amount = float(input("Enter the amount of transaction: "))
-            ctgry = int(
-                input(
-                    "Enter 1 if category you wish to enter is income and 2 for expense"
-                )
-            )
+                ctgry = 2
             if ctgry == 1:
                 inc_ctgry = int(
                     input(
@@ -124,7 +117,8 @@ def add_transactions():
                     category = "Personal"
                 elif exp_ctgry == 5:
                     category = "Miscellaneuos"
-            expense_description = input("Enter the description for your expense: ")
+            amount = float(input("Enter the amount of transaction: "))
+            expense_description = input("Enter the description for your transaction: ")
             entry = [
                 date,
                 transaction_type,
@@ -132,6 +126,14 @@ def add_transactions():
                 category,
                 expense_description,
             ]
+            for date as key in budget dictionary:
+                if dictionary[date][month] == entry[0][month]:
+                    sum = 0
+                    for all_transactions_list:
+                        sum += all_transactions_list[date][category][amount]
+            if sum > budget_dictioinary[category][amount]:
+                print(f"You have gone over budget for category {entry[3]} for month {entry[0][month]}")
+                print("Do you want to still continue with adding this and editing monthly budget OR cancel this entry")
             result = tuple(entry)
             all_transactions_list.append(result)
         elif choice == 0:
@@ -257,10 +259,41 @@ def summary():
 
 
 def set_budget():
-    budget = input("Enter the budget you want to set up for the month: ")
+    global budgets
+    budget_month = get_budget_month()
+    Food_budget = float(input("Enter the budget for food: "))
+    Entertainment_budget = float(input("Enter the budget for Entertainment: "))
+    Travel_budget = float(input("Enter the budget for Travel: "))
+    Personal_budget = float(input("Enter the budget for Personal: "))
+    Miscellaneous_budget = float(input("Enter the budget for Miscellaneous: "))
+    budget_targets = {"Food":Food_budget,"Entertainment":Entertainment_budget,"Travel":Travel_budget,"Personal":Personal_budget,"Miscellaneuos":Miscellaneous_budget}
+    budgets[budget_month] = budget_targets
 
 
-# def budget_status():
+
+def budget_status():
+    for i in all_transactions_list:
+        if i[1] == "income" and i[3] == "salary":
+            income += i[2]
+            salary += i[2]
+        elif i[1] == "income" and i[3] == "others":
+            income += i[2]
+            others += i[2]
+        elif i[1] == "expense" and i[3] == "Food":
+            expense += i[2]
+            Food += i[2]
+        elif i[1] == "expense" and i[3] == "Entertainment":
+            expense += i[2]
+            Entertainment += i[2]
+        elif i[1] == "expense" and i[3] == "Travel":
+            expense += i[2]
+            Travel += i[2]
+        elif i[1] == "expense" and i[3] == "Personal":
+            expense += i[2]
+            Personal += i[2]
+        elif i[1] == "expense" and i[3] == "Miscellaneuos":
+            expense += i[2]
+            Miscellaneuos += i[2]
 
 
 # def reports():
