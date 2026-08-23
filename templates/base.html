@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Finance Tracker{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">₹</span>
+      <span class="brand-name">Finance<br>Tracker</span>
+    </div>
+    <nav class="nav">
+      <a href="{{ url_for('dashboard') }}" class="nav-item {{ 'active' if active == 'dashboard' }}">Dashboard</a>
+      <a href="{{ url_for('add_transaction') }}" class="nav-item {{ 'active' if active == 'add' }}">Add Transaction</a>
+      <a href="{{ url_for('transactions') }}" class="nav-item {{ 'active' if active == 'transactions' }}">Transactions</a>
+      <a href="{{ url_for('budget') }}" class="nav-item {{ 'active' if active == 'budget' }}">Budget</a>
+      <a href="{{ url_for('reports') }}" class="nav-item {{ 'active' if active == 'reports' }}">Reports</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <header class="topbar">
+      <h1>{% block heading %}{% endblock %}</h1>
+      {% block subtitle %}{% endblock %}
+    </header>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

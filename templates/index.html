@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Finance Tracker{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block subtitle %}<p class="subtitle">Overview of your income, spending, and this month's activity.</p>{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Income</div>
+    <div class="stat-value positive">{{ totals.income|inr }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Expense</div>
+    <div class="stat-value negative">{{ totals.expense|inr }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Net Balance</div>
+    <div class="stat-value {{ 'positive' if net_balance >= 0 else 'negative' }}">{{ net_balance|inr }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Spent in {{ this_month|monthlabel }}</div>
+    <div class="stat-value">{{ month_totals.expense|inr }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Spending by category — {{ this_month|monthlabel }}</h2>
+  {% if category_breakdown %}
+    {% for c in category_breakdown %}
+    <div class="cat-row">
+      <span class="cat-dot" style="background:{{ c.color }};"></span>
+      <span class="cat-name">{{ c.name }}</span>
+      <span class="cat-track">
+        <span class="cat-fill" style="width:{{ (c.amount / max_cat_amount * 100) if max_cat_amount else 0 }}%; background:{{ c.color }};"></span>
+      </span>
+      <span class="cat-amount">{{ c.amount|inr }}</span>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty-state">No expenses recorded for this month yet.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Recent transactions</h2>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th></tr>
+    </thead>
+    <tbody>
+      {% for t in recent %}
+      <tr>
+        <td>{{ t.date|prettydate }}</td>
+        <td>
+          {% if t.type == 'income' %}
+            <span class="badge badge-income">{{ t.category|capitalize }}</span>
+          {% else %}
+            <span class="badge" style="background:{{ {'Food':'#EA4335','Entertainment':'#FBBC04','Travel':'#34A853','Personal':'#4285F4','Miscellaneous':'#A142F4'}[t.category] }};">{{ t.category }}</span>
+          {% endif %}
+        </td>
+        <td>{{ t.description }}</td>
+        <td class="{{ 'amount-income' if t.type == 'income' else 'amount-expense' }}">
+          {{ '+' if t.type == 'income' else '−' }}{{ t.amount|inr }}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="empty-state">No transactions yet — add your first one to get started.</p>
+  {% endif %}
+</div>
+{% endblock %}

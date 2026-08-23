@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Budget · Finance Tracker{% endblock %}
+{% block heading %}Budget{% endblock %}
+{% block subtitle %}<p class="subtitle">Set monthly targets per category and track how you're doing.</p>{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:560px;">
+  <h2>Set budget for a month</h2>
+  <form method="post">
+    <div class="field">
+      <label for="month">Month</label>
+      <input type="month" id="month" name="month" value="{{ selected_month }}" required>
+    </div>
+    <div class="form-grid">
+      {% for c in expense_categories %}
+      <div class="field">
+        <label for="budget-{{ c }}">{{ c }} (₹)</label>
+        <input type="number" id="budget-{{ c }}" name="{{ c }}" step="0.01" min="0" value="{{ month_budget.get(c, '') }}">
+      </div>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn">Save Budget</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Budget vs actual</h2>
+  <form method="get" class="field" style="max-width:260px;">
+    <label for="view-month">Viewing</label>
+    <select id="view-month" name="month" onchange="this.form.submit()">
+      {% if current_month not in months %}
+      <option value="{{ current_month }}" {{ 'selected' if selected_month == current_month }}>{{ current_month|monthlabel }} (current)</option>
+      {% endif %}
+      {% for m in months %}
+      <option value="{{ m }}" {{ 'selected' if m == selected_month }}>{{ m|monthlabel }}{{ ' (current)' if m == current_month }}</option>
+      {% endfor %}
+    </select>
+  </form>
+
+  {% if month_budget %}
+    {% for row in rows %}
+    <div class="budget-row">
+      <div class="budget-head">
+        <span class="cat">{{ row.category }}</span>
+        <span class="figures {{ 'over' if row.over }}">{{ row.spent|inr }} of {{ row.target|inr }}{{ ' — over budget' if row.over }}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:{{ row.pct }}%; background:{{ '#d93025' if row.over else row.color }};"></div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty-state">No budget set for {{ selected_month|monthlabel }} yet — set one above.</p>
+  {% endif %}
+</div>
+{% endblock %}

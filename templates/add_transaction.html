@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Add Transaction · Finance Tracker{% endblock %}
+{% block heading %}Add Transaction{% endblock %}
+{% block subtitle %}<p class="subtitle">Log a new income or expense entry.</p>{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px;">
+  <form method="post">
+    <div class="form-grid">
+      <div class="field">
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" value="{{ today }}" required>
+      </div>
+      <div class="field">
+        <label for="amount">Amount (₹)</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="0" placeholder="0.00" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="category">Category</label>
+      <select id="category" name="category" required>
+        <optgroup label="Income">
+          <option value="salary">Salary</option>
+          <option value="others">Other income</option>
+        </optgroup>
+        <optgroup label="Expense">
+          {% for c in expense_categories %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <input type="text" id="description" name="description" placeholder="e.g. Groceries, freelance payment...">
+    </div>
+
+    <button type="submit" class="btn">Add Transaction</button>
+  </form>
+</div>
+{% endblock %}

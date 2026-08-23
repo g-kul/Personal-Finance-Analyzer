@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Reports · Finance Tracker{% endblock %}
+{% block heading %}Reports{% endblock %}
+{% block subtitle %}<p class="subtitle">Visual breakdown of your spending and budgets.</p>{% endblock %}
+
+{% block content %}
+<div class="scope-tabs">
+  <a href="{{ url_for('reports', scope='all') }}" class="scope-tab {{ 'active' if scope == 'all' }}">All time</a>
+  {% for m in months %}
+  <a href="{{ url_for('reports', scope=m) }}" class="scope-tab {{ 'active' if scope == m }}">{{ m|monthlabel }}</a>
+  {% endfor %}
+</div>
+
+<div class="chart-grid">
+  {% if bar_chart %}
+  <div class="card">
+    <h2>Spending by category</h2>
+    <img src="data:image/png;base64,{{ bar_chart }}" alt="Bar chart of spending by category">
+  </div>
+  {% endif %}
+
+  {% if pie_chart %}
+  <div class="card">
+    <h2>Expense breakdown</h2>
+    <img src="data:image/png;base64,{{ pie_chart }}" alt="Pie chart of expense breakdown">
+  </div>
+  {% endif %}
+
+  {% if budget_chart %}
+  <div class="card">
+    <h2>Budget vs actual</h2>
+    <img src="data:image/png;base64,{{ budget_chart }}" alt="Bar chart comparing spend to budget">
+  </div>
+  {% endif %}
+
+  {% if trend_chart %}
+  <div class="card">
+    <h2>Income vs expense over time</h2>
+    <img src="data:image/png;base64,{{ trend_chart }}" alt="Line chart of income vs expense over time">
+  </div>
+  {% endif %}
+</div>
+
+{% if not bar_chart and not pie_chart and not budget_chart and not trend_chart %}
+<div class="card">
+  <p class="empty-state">No data yet for {{ scope_label }} — add some transactions to see reports.</p>
+</div>
+{% endif %}
+{% endblock %}
