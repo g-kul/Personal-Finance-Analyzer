@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Budget · Finance Tracker{% endblock %}
 {% block heading %}Budget{% endblock %}
-{% block subtitle %}<p class="subtitle">Set monthly targets per category and track how you're doing.</p>{% endblock %}
+{% block subtitle %}<p class="subtitle">Set a monthly target for each category and track your spending against it.</p>{% endblock %}
 
 {% block content %}
 <div class="card" style="max-width:560px;">
@@ -45,12 +45,12 @@
         <span class="figures {{ 'over' if row.over }}">{{ row.spent|inr }} of {{ row.target|inr }}{{ ' — over budget' if row.over }}</span>
       </div>
       <div class="progress-track">
-        <div class="progress-fill" style="width:{{ row.pct }}%; background:{{ '#d93025' if row.over else row.color }};"></div>
+        <div class="progress-fill" style="width:{{ row.pct }}%; background:{{ '#ff3b30' if row.over else row.color }};"></div>
       </div>
     </div>
     {% endfor %}
   {% else %}
-    <p class="empty-state">No budget set for {{ selected_month|monthlabel }} yet — set one above.</p>
+    <p class="empty-state">No budget set for {{ selected_month|monthlabel }} yet. Set one above.</p>
   {% endif %}
 </div>
 {% endblock %}

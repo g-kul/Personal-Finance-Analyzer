@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Reports · Finance Tracker{% endblock %}
 {% block heading %}Reports{% endblock %}
-{% block subtitle %}<p class="subtitle">Visual breakdown of your spending and budgets.</p>{% endblock %}
+{% block subtitle %}<p class="subtitle">Charts of your spending and budgets.</p>{% endblock %}
 
 {% block content %}
 <div class="scope-tabs">
@@ -43,7 +43,7 @@
 
 {% if not bar_chart and not pie_chart and not budget_chart and not trend_chart %}
 <div class="card">
-  <p class="empty-state">No data yet for {{ scope_label }} — add some transactions to see reports.</p>
+  <p class="empty-state">No data yet for {{ scope_label }}. Add some transactions to see charts here.</p>
 </div>
 {% endif %}
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Dashboard · Finance Tracker{% endblock %}
 {% block heading %}Dashboard{% endblock %}
-{% block subtitle %}<p class="subtitle">Overview of your income, spending, and this month's activity.</p>{% endblock %}
+{% block subtitle %}<p class="subtitle">A summary of your income, spending, and recent activity.</p>{% endblock %}
 
 {% block content %}
 <div class="stat-grid">
@@ -56,7 +56,7 @@
           {% if t.type == 'income' %}
             <span class="badge badge-income">{{ t.category|capitalize }}</span>
           {% else %}
-            <span class="badge" style="background:{{ {'Food':'#EA4335','Entertainment':'#FBBC04','Travel':'#34A853','Personal':'#4285F4','Miscellaneous':'#A142F4'}[t.category] }};">{{ t.category }}</span>
+            <span class="badge" style="background:{{ category_colors[t.category] }}1F; color:{{ category_colors[t.category] }};">{{ t.category }}</span>
           {% endif %}
         </td>
         <td>{{ t.description }}</td>
@@ -68,7 +68,7 @@
     </tbody>
   </table>
   {% else %}
-    <p class="empty-state">No transactions yet — add your first one to get started.</p>
+    <p class="empty-state">No transactions yet. Add one to see it here.</p>
   {% endif %}
 </div>
 {% endblock %}

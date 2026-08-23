@@ -13,14 +13,14 @@ budgets = {}
 EXPENSE_CATEGORIES = ["Food", "Entertainment", "Travel", "Personal", "Miscellaneous"]
 INCOME_CATEGORIES = ["salary", "others"]
 
-# Professional, muted palette for charts (kept consistent everywhere a category
-# needs a color).
+# Same palette used throughout the app and charts, so a category always
+# reads as the same color everywhere it appears.
 CATEGORY_COLORS = {
-    "Food": "#EA4335",
-    "Entertainment": "#FBBC04",
-    "Travel": "#34A853",
-    "Personal": "#4285F4",
-    "Miscellaneous": "#A142F4",
+    "Food": "#FF9500",
+    "Entertainment": "#AF52DE",
+    "Travel": "#30B0C7",
+    "Personal": "#007AFF",
+    "Miscellaneous": "#8E8E93",
 }
 
 # Data files live next to this script, not in whatever directory the user
@@ -101,12 +101,12 @@ def compute_totals(transactions):
 def main_menu():
     menu = [
         "Add Transaction",
-        "View all transaction",
+        "View Transactions",
         "View Transactions by Category",
-        "View Summary & Statistics",
-        "Set Budget for Category",
+        "View Summary",
+        "Set Budget",
         "Check Budget Status",
-        "Generate Monthly Report",
+        "View Reports",
         "Exit",
     ]
     for i, n in enumerate(menu, start=1):
@@ -118,38 +118,36 @@ def main_menu():
 # ---------------------------------------------------------------------------
 def add_transactions():
     while True:
-        choice = get_int_choice("Enter 0 to exit or 1 to enter a transaction data: ")
+        choice = get_int_choice("Enter 0 to exit or 1 to add a transaction: ")
         if choice == 0:
             break
         if choice != 1:
-            print("Enter a valid choice!!!")
+            print("Please enter a valid choice.")
             continue
 
-        print(
-            "Enter your transaction below, it follows the format "
-            "Transaction = (date, transaction type, amount, category, description)"
-        )
+        print("Enter your transaction details below.")
         date = get_datetime_input()
         t_type = get_int_choice(
-            "Enter the type of transaction: \n\n1. Enter 1 for income\n2. Enter 2 for expense: "
+            "Select a transaction type:\n1. Income\n2. Expense\nChoice: "
         )
 
         category = None
         if t_type == 1:
             transaction_type = "income"
             inc_ctgry = get_int_choice(
-                "Enter the type of income: \n\n1. Enter 1 for salary\n2. Enter 2 for others: "
+                "Select an income category:\n1. Salary\n2. Other\nChoice: "
             )
             category = {1: "salary", 2: "others"}.get(inc_ctgry)
         elif t_type == 2:
             transaction_type = "expense"
             exp_ctgry = get_int_choice(
-                "Enter the type of expense: \n\n"
-                "1. Enter 1 for Food\n"
-                "2. Enter 2 for Entertainment\n"
-                "3. Enter 3 for Travel\n"
-                "4. Enter 4 for Personal\n"
-                "5. Enter 5 for Miscellaneous: "
+                "Select an expense category:\n"
+                "1. Food\n"
+                "2. Entertainment\n"
+                "3. Travel\n"
+                "4. Personal\n"
+                "5. Miscellaneous\n"
+                "Choice: "
             )
             category = {
                 1: "Food",
@@ -159,15 +157,15 @@ def add_transactions():
                 5: "Miscellaneous",
             }.get(exp_ctgry)
         else:
-            print("Enter a valid choice!!!")
+            print("Please enter a valid choice.")
             continue
 
         if category is None:
-            print("Enter a valid choice!!!")
+            print("Please enter a valid choice.")
             continue
 
-        amount = get_float_input("Enter the amount of transaction: ")
-        description = input("Enter the description for your transaction: ")
+        amount = get_float_input("Amount: ")
+        description = input("Description: ")
         entry = [date, transaction_type, amount, category, description]
 
         # Only expenses are checked against a budget - income has no budget
@@ -196,11 +194,10 @@ def add_transactions():
 
         if over_budget:
             print(
-                f"You will go over budget for category {entry[3]} for month {entry[0].month}"
+                f"This will put {entry[3]} over budget for month {entry[0].month}."
             )
             option = get_int_choice(
-                "Do you want to still continue with adding this and editing the "
-                "monthly budget? Press 1 to continue OR enter 0 to cancel this entry: "
+                "Add it anyway and update the budget? 1. Yes  0. Cancel: "
             )
             if option == 1:
                 all_transactions_list.append(tuple(entry))
@@ -216,16 +213,17 @@ def add_transactions():
 # ---------------------------------------------------------------------------
 def view_transactions():
     choice = get_int_choice(
-        "Enter the transactions you wish to view: \n"
-        "Enter 1 to view all transactions you have entered so far\n"
-        "Enter 2 to view transactions by month\n"
-        "Enter 3 to show transactions for a range of dates: "
+        "View transactions:\n"
+        "1. All transactions\n"
+        "2. By month\n"
+        "3. By date range\n"
+        "Choice: "
     )
     if choice == 1:
         if not all_transactions_list:
-            print("You haven't entered any transactions yet!")
+            print("No transactions recorded yet.")
         else:
-            print("Each transaction you have made:")
+            print("Your transactions:")
             for n, i in enumerate(all_transactions_list, start=1):
                 print(n, ". ", i)
     elif choice == 2:
@@ -236,7 +234,7 @@ def view_transactions():
                 print(n, ". ", i)
                 found = True
         if not found:
-            print("There are no entries for the selected month!")
+            print("No transactions found for that month.")
     elif choice == 3:
         start_date = get_datetime_input()
         end_date = get_datetime_input()
@@ -246,35 +244,35 @@ def view_transactions():
                 print(n, ". ", i)
                 found = True
         if not found:
-            print("There are no entries entered for the selected dates!")
+            print("No transactions found in that date range.")
     else:
-        print("Please enter a valid choice!!!")
+        print("Please enter a valid choice.")
 
 
 def view_transactions_category():
     choice = get_int_choice(
-        "Enter the type of transaction you wish to see\n\n"
-        "1. Enter 1 for seeing those under income\n"
-        "2. Enter 2 for seeing those under expense\n: "
+        "View transactions by category:\n"
+        "1. Income\n"
+        "2. Expense\n"
+        "Choice: "
     )
     category = None
     if choice == 1:
         ttype = "income"
         options = get_int_choice(
-            "Enter the choice of transaction in income: \n\n"
-            "1. Enter 1 for seeing under 'salary'\n"
-            "2. Enter 2 for seeing under 'others'\n: "
+            "Select an income category:\n1. Salary\n2. Other\nChoice: "
         )
         category = {1: "salary", 2: "others"}.get(options)
     elif choice == 2:
         ttype = "expense"
         options = get_int_choice(
-            "Enter the choice of transaction in expense: \n\n"
-            "1. Enter 1 for seeing under Food\n"
-            "2. Enter 2 for seeing under Entertainment\n"
-            "3. Enter 3 for seeing under Travel\n"
-            "4. Enter 4 for seeing under Personal\n"
-            "5. Enter 5 for seeing under Miscellaneous: "
+            "Select an expense category:\n"
+            "1. Food\n"
+            "2. Entertainment\n"
+            "3. Travel\n"
+            "4. Personal\n"
+            "5. Miscellaneous\n"
+            "Choice: "
         )
         category = {
             1: "Food",
@@ -284,18 +282,15 @@ def view_transactions_category():
             5: "Miscellaneous",
         }.get(options)
     else:
-        print("Please enter a valid choice!!!")
+        print("Please enter a valid choice.")
         return
 
     if category is None:
-        print("Please enter a valid choice!!!")
+        print("Please enter a valid choice.")
         return
 
     month_choice = get_month()
-    print(
-        f"Your selected transactions for the month {month_choice.month} in "
-        f"{month_choice.year} are:\n"
-    )
+    print(f"Transactions for {month_choice.month}/{month_choice.year}:\n")
     found = False
     for n, i in enumerate(all_transactions_list):
         if (
@@ -307,7 +302,7 @@ def view_transactions_category():
             print("Index: ", n, " ", i)
             found = True
     if not found:
-        print("No entry has been found!")
+        print("No matching transactions found.")
 
 
 # ---------------------------------------------------------------------------
@@ -315,13 +310,11 @@ def view_transactions_category():
 # ---------------------------------------------------------------------------
 def summary():
     choice = get_int_choice(
-        "Enter the choice of viewing your transactions summary\n"
-        "Enter 1 for viewing entire summary\n"
-        "Enter 2 for viewing summary for month of choice: "
+        "View summary:\n1. All time\n2. By month\nChoice: "
     )
     if choice == 1:
         transactions = all_transactions_list
-        header = "The summary of your entire transactions are:"
+        header = "Summary — all time:"
     elif choice == 2:
         summary_month = get_month()
         transactions = [
@@ -329,19 +322,16 @@ def summary():
             for i in all_transactions_list
             if i[0].month == summary_month.month and i[0].year == summary_month.year
         ]
-        header = (
-            f"The summary of your transactions for the month "
-            f"{summary_month.month} of year {summary_month.year} are:"
-        )
+        header = f"Summary — {summary_month.month}/{summary_month.year}:"
     else:
-        print("Please enter a valid choice!!!")
+        print("Please enter a valid choice.")
         return
 
     totals, _ = compute_totals(transactions)
     print(header)
     print(f"Income: {totals['income']}")
     print(f"Salary: {totals['salary']}")
-    print(f"Other_income: {totals['others']}")
+    print(f"Other income: {totals['others']}")
     print(f"Expense: {totals['expense']}")
     for category in EXPENSE_CATEGORIES:
         print(f"{category}: {totals[category]}")
@@ -351,11 +341,11 @@ def summary():
 # Budgets
 # ---------------------------------------------------------------------------
 def set_budget():
-    print("Enter the month for which you wish to set the budget below")
+    print("Set a budget for a month.")
     budget_month = get_month()
     budget_targets = {}
     for category in EXPENSE_CATEGORIES:
-        budget_targets[category] = get_float_input(f"Enter the budget for {category}: ")
+        budget_targets[category] = get_float_input(f"{category} budget: ")
     budgets[budget_month] = budget_targets
 
 
@@ -374,31 +364,24 @@ def budget_status():
     ]
     totals, _ = compute_totals(transactions)
 
-    print(
-        f"The budget status of your transactions for the month "
-        f"{status_month.month} of year {status_month.year} are:"
-    )
-    print(f"Total Income for the month: {totals['income']}")
-    print(f"Salary for the month: {totals['salary']}")
-    print(f"Other_income for the month: {totals['others']}")
+    print(f"Budget status — {status_month.month}/{status_month.year}:")
+    print(f"Total income: {totals['income']}")
+    print(f"Salary: {totals['salary']}")
+    print(f"Other income: {totals['others']}")
 
     if budget_key is None:
         # Previously this still tried to print budgets[status_month][...]
         # even when no budget existed, which crashed with a KeyError.
-        print(f"Expense for the month: {totals['expense']}")
-        print("There is no budget setup for the entered month!!!")
+        print(f"Total expense: {totals['expense']}")
+        print("No budget set for this month.")
         return
 
     category_budgets = budgets[budget_key]
     total_budget = sum(category_budgets.values())
-    print(
-        f"Expense for the month: {totals['expense']} and budget for "
-        f"expense for month {total_budget}"
-    )
+    print(f"Total expense: {totals['expense']} of {total_budget} budgeted")
     for category in EXPENSE_CATEGORIES:
         print(
-            f"{category} expense for the month is: {totals[category]} and "
-            f"budget for {category} for month is {category_budgets.get(category, 0)}"
+            f"{category}: {totals[category]} of {category_budgets.get(category, 0)} budgeted"
         )
 
 
@@ -445,23 +428,26 @@ def load_files():
 # ---------------------------------------------------------------------------
 def reports():
     option = get_int_choice(
-        "Enter 1 for getting reports based on entire data\n"
-        "Enter 2 for getting reports based on month of choice: "
+        "Generate report:\n1. All time\n2. By month\nChoice: "
     )
 
     if option == 1:
         choice = get_int_choice(
-            "Enter 1 for spending by category and expense breakdown\n"
-            "Enter 2 for expense vs budget by category\n"
-            "Enter 3 for total income vs Expense: "
+            "Choose a chart:\n"
+            "1. Spending by category\n"
+            "2. Budget vs actual\n"
+            "3. Income vs expense over time\n"
+            "Choice: "
         )
         transactions = all_transactions_list
         month_label = ""
         relevant_budgets = budgets
     elif option == 2:
         choice = get_int_choice(
-            "Enter 1 for spending by category and expense breakdown for the month\n"
-            "Enter 2 for expense vs budget for month: "
+            "Choose a chart:\n"
+            "1. Spending by category\n"
+            "2. Budget vs actual\n"
+            "Choice: "
         )
         month_choice = get_month()
         transactions = [
@@ -469,18 +455,18 @@ def reports():
             for i in all_transactions_list
             if i[0].month == month_choice.month and i[0].year == month_choice.year
         ]
-        month_label = f" for the month {month_choice.month}/{month_choice.year}"
+        month_label = f" — {month_choice.month}/{month_choice.year}"
         if not transactions:
-            print("Your entered month is not there in entered transactions")
+            print("No transactions found for that month.")
         relevant_budgets = {
             k: v
             for k, v in budgets.items()
             if k.month == month_choice.month and k.year == month_choice.year
         }
         if not relevant_budgets:
-            print("The entered month is not setup in your budgets")
+            print("No budget set for that month.")
     else:
-        print("Please enter a valid choice!!!")
+        print("Please enter a valid choice.")
         return
 
     totals, counts = compute_totals(transactions)
@@ -497,20 +483,20 @@ def reports():
     if choice == 1:
         plt.figure()
         plt.bar(categories_list, spending_category, color=colors)
-        plt.xlabel("Expense Categories")
+        plt.xlabel("Category")
         plt.ylabel("Amount spent")
-        plt.title(f"Total spending by category{month_label}")
+        plt.title(f"Spending by category{month_label}")
         plt.tight_layout()
         plt.show()
 
         plt.figure()
         plt.pie(category_breakdown, labels=categories_list, colors=colors)
-        plt.title(f"Expense breakdown by number of spending{month_label}")
+        plt.title(f"Expense breakdown by transaction count{month_label}")
         plt.show()
 
         plt.figure()
         plt.pie(spending_category, labels=categories_list, colors=colors)
-        plt.title(f"Expense breakdown by amount of spending{month_label}")
+        plt.title(f"Expense breakdown by amount{month_label}")
         plt.show()
     elif choice == 2:
         x = list(range(len(categories_list)))
@@ -520,15 +506,15 @@ def reports():
             [i - width / 2 for i in x],
             spending_category,
             width,
-            label=f"total amount spent{month_label}",
-            color="#4285F4",
+            label=f"Spent{month_label}",
+            color="#0071e3",
         )
         plt.bar(
             [i + width / 2 for i in x],
             total_budget_list,
             width,
-            label=f"total budget{month_label}",
-            color="#FBBC04",
+            label=f"Budget{month_label}",
+            color="#c7c7cc",
         )
         plt.xticks(x, categories_list)
         plt.legend()
@@ -547,13 +533,13 @@ def reports():
         income_values_sort = [income_dict.get(m, 0) for m in months_sort]
         expense_values_sort = [expense_dict.get(m, 0) for m in months_sort]
         plt.figure()
-        plt.plot(months_sort, income_values_sort, label="Income", color="#34A853")
-        plt.plot(months_sort, expense_values_sort, label="Expense", color="#EA4335")
+        plt.plot(months_sort, income_values_sort, label="Income", color="#34c759")
+        plt.plot(months_sort, expense_values_sort, label="Expense", color="#ff3b30")
         plt.legend()
         plt.tight_layout()
         plt.show()
     else:
-        print("Please enter a valid choice!!!")
+        print("Please enter a valid choice.")
 
 
 # ---------------------------------------------------------------------------
@@ -582,7 +568,7 @@ def main():
             save_files()
             break
         else:
-            print("Enter valid input!!!")
+            print("Please enter a valid choice.")
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Transactions · Finance Tracker{% endblock %}
 {% block heading %}Transactions{% endblock %}
-{% block subtitle %}<p class="subtitle">All of your recorded income and expenses.</p>{% endblock %}
+{% block subtitle %}<p class="subtitle">Every income and expense you've recorded.</p>{% endblock %}
 
 {% block content %}
 <form method="get" class="filter-bar card">
@@ -56,7 +56,7 @@
           {% if t.type == 'income' %}
             <span class="badge badge-income">{{ t.category|capitalize }}</span>
           {% else %}
-            <span class="badge" style="background:{{ category_colors[t.category] }};">{{ t.category }}</span>
+            <span class="badge" style="background:{{ category_colors[t.category] }}1F; color:{{ category_colors[t.category] }};">{{ t.category }}</span>
           {% endif %}
         </td>
         <td>{{ t.description }}</td>

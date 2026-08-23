@@ -19,13 +19,14 @@ BUDGETS_FILE = os.path.join(DATA_DIR, "budgets.json")
 EXPENSE_CATEGORIES = ["Food", "Entertainment", "Travel", "Personal", "Miscellaneous"]
 INCOME_CATEGORIES = ["salary", "others"]
 
-# Same restrained, professional palette used throughout the app and charts.
+# Same palette used throughout the app and charts, so a category always
+# reads as the same color everywhere it appears.
 CATEGORY_COLORS = {
-    "Food": "#EA4335",
-    "Entertainment": "#FBBC04",
-    "Travel": "#34A853",
-    "Personal": "#4285F4",
-    "Miscellaneous": "#A142F4",
+    "Food": "#FF9500",
+    "Entertainment": "#AF52DE",
+    "Travel": "#30B0C7",
+    "Personal": "#007AFF",
+    "Miscellaneous": "#8E8E93",
 }
 
 app = Flask(__name__)
@@ -191,6 +192,7 @@ def dashboard():
         recent=recent,
         category_breakdown=category_breakdown,
         max_cat_amount=max_cat_amount,
+        category_colors=CATEGORY_COLORS,
     )
 
 
@@ -362,8 +364,8 @@ def reports():
         x = list(range(len(categories)))
         width = 0.35
         plt.figure(figsize=(6, 4))
-        plt.bar([i - width / 2 for i in x], spending, width, label="Spent", color="#4285F4")
-        plt.bar([i + width / 2 for i in x], budget_totals, width, label="Budget", color="#FBBC04")
+        plt.bar([i - width / 2 for i in x], spending, width, label="Spent", color="#0071e3")
+        plt.bar([i + width / 2 for i in x], budget_totals, width, label="Budget", color="#c7c7cc")
         plt.xticks(x, categories)
         plt.legend()
         plt.title(f"Budget vs actual — {scope_label}")
@@ -382,8 +384,8 @@ def reports():
         month_labels = sorted(set(income_by_month) | set(expense_by_month))
         if month_labels:
             plt.figure(figsize=(7, 4))
-            plt.plot(month_labels, [income_by_month[m] for m in month_labels], label="Income", color="#34A853", marker="o")
-            plt.plot(month_labels, [expense_by_month[m] for m in month_labels], label="Expense", color="#EA4335", marker="o")
+            plt.plot(month_labels, [income_by_month[m] for m in month_labels], label="Income", color="#34c759", marker="o")
+            plt.plot(month_labels, [expense_by_month[m] for m in month_labels], label="Expense", color="#ff3b30", marker="o")
             plt.legend()
             plt.title("Income vs expense over time")
             plt.xticks(rotation=30, ha="right")
