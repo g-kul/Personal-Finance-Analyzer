@@ -142,7 +142,7 @@ def available_months(transactions, budgets):
 def fig_to_base64():
     buf = io.BytesIO()
     plt.tight_layout()
-    plt.savefig(buf, format="png", dpi=140, transparent=True)
+    plt.savefig(buf, format="png", dpi=170, transparent=True)
     plt.close()
     buf.seek(0)
     return base64.b64encode(buf.read()).decode("ascii")
@@ -342,11 +342,11 @@ def reports():
         for i, c in enumerate(categories):
             budget_totals[i] += targets.get(c, 0)
 
-    plt.rcParams.update({"font.size": 11, "font.family": "sans-serif"})
+    plt.rcParams.update({"font.size": 12, "font.family": "sans-serif"})
 
     bar_chart = None
     if sum(spending) > 0:
-        plt.figure(figsize=(6, 4))
+        plt.figure(figsize=(7.2, 4.8))
         plt.bar(categories, spending, color=colors)
         plt.ylabel("Amount spent")
         plt.title(f"Spending by category — {scope_label}")
@@ -354,7 +354,7 @@ def reports():
 
     pie_chart = None
     if sum(spending) > 0:
-        plt.figure(figsize=(5, 5))
+        plt.figure(figsize=(6, 6))
         plt.pie(spending, labels=categories, colors=colors, autopct="%1.0f%%")
         plt.title(f"Expense breakdown — {scope_label}")
         pie_chart = fig_to_base64()
@@ -363,7 +363,7 @@ def reports():
     if any(budget_totals):
         x = list(range(len(categories)))
         width = 0.35
-        plt.figure(figsize=(6, 4))
+        plt.figure(figsize=(11, 4.6))
         plt.bar([i - width / 2 for i in x], spending, width, label="Spent", color="#0071e3")
         plt.bar([i + width / 2 for i in x], budget_totals, width, label="Budget", color="#c7c7cc")
         plt.xticks(x, categories)
@@ -383,7 +383,7 @@ def reports():
                 expense_by_month[m] += t["amount"]
         month_labels = sorted(set(income_by_month) | set(expense_by_month))
         if month_labels:
-            plt.figure(figsize=(7, 4))
+            plt.figure(figsize=(11, 4.6))
             plt.plot(month_labels, [income_by_month[m] for m in month_labels], label="Income", color="#34c759", marker="o")
             plt.plot(month_labels, [expense_by_month[m] for m in month_labels], label="Expense", color="#ff3b30", marker="o")
             plt.legend()

@@ -4,11 +4,13 @@
 {% block subtitle %}<p class="subtitle">Charts of your spending and budgets.</p>{% endblock %}
 
 {% block content %}
-<div class="scope-tabs">
-  <a href="{{ url_for('reports', scope='all') }}" class="scope-tab {{ 'active' if scope == 'all' }}">All time</a>
-  {% for m in months %}
-  <a href="{{ url_for('reports', scope=m) }}" class="scope-tab {{ 'active' if scope == m }}">{{ m|monthlabel }}</a>
-  {% endfor %}
+<div class="scope-tabs-wrap">
+  <div class="scope-tabs">
+    <a href="{{ url_for('reports', scope='all') }}" class="scope-tab {{ 'active' if scope == 'all' }}">All time</a>
+    {% for m in months %}
+    <a href="{{ url_for('reports', scope=m) }}" class="scope-tab {{ 'active' if scope == m }}">{{ m|monthlabel }}</a>
+    {% endfor %}
+  </div>
 </div>
 
 <div class="chart-grid">
@@ -27,14 +29,14 @@
   {% endif %}
 
   {% if budget_chart %}
-  <div class="card">
+  <div class="card full-width">
     <h2>Budget vs actual</h2>
     <img src="data:image/png;base64,{{ budget_chart }}" alt="Bar chart comparing spend to budget">
   </div>
   {% endif %}
 
   {% if trend_chart %}
-  <div class="card">
+  <div class="card full-width">
     <h2>Income vs expense over time</h2>
     <img src="data:image/png;base64,{{ trend_chart }}" alt="Line chart of income vs expense over time">
   </div>

@@ -7,12 +7,9 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-<div class="layout">
-  <aside class="sidebar">
-    <div class="brand">
-      <span class="brand-mark">₹</span>
-      <span class="brand-name">Finance<br>Tracker</span>
-    </div>
+<header class="topbar-nav">
+  <div class="topbar-inner">
+    <span class="brand-name">Finance Tracker</span>
     <nav class="nav">
       <a href="{{ url_for('dashboard') }}" class="nav-item {{ 'active' if active == 'dashboard' }}">Dashboard</a>
       <a href="{{ url_for('add_transaction') }}" class="nav-item {{ 'active' if active == 'add' }}">Add Transaction</a>
@@ -20,7 +17,9 @@
       <a href="{{ url_for('budget') }}" class="nav-item {{ 'active' if active == 'budget' }}">Budget</a>
       <a href="{{ url_for('reports') }}" class="nav-item {{ 'active' if active == 'reports' }}">Reports</a>
     </nav>
-  </aside>
+  </div>
+</header>
+<div class="page">
   <main class="content">
     <header class="topbar">
       <h1>{% block heading %}{% endblock %}</h1>
